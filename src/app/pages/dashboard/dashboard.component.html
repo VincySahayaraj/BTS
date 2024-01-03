@@ -1,0 +1,301 @@
+
+<!-- Heading based on date -->
+<h2 class="mat-headline-5 textCenter  pt-10 ">{{this.heading}} Orders</h2>
+
+<!-- Filters -->
+<div class="d-flex justify-content-center align-items-center flex-direction-column filters-list mb-30">
+  <div class="date-filter">
+    <!-- <mat-label>Date Filter</mat-label> -->
+    <button (click)="dateFilter(customDate)" class="date-filter-btn">Date Filter
+      <!-- <mat-option value="customDate">Custom Date</mat-option> -->
+    </button>
+    <!-- <mat-select (selectionChange)="dateFilter($event.value)">
+      <mat-option value="customDate">Custom Date</mat-option>
+    </mat-select> -->
+  </div>
+  <mat-form-field class="sub-client" *ngIf="this.subClientPresent">
+    <mat-label>Sub Client</mat-label>
+    <mat-select (selectionChange)="subclientChange($event.value)">
+      <mat-option value={{subclient.id}}
+        *ngFor="let subclient of this.subclientList">{{subclient.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<!-- Date form -->
+<div class="form-date" *ngIf="selectCustomDate">
+  <form [formGroup]="dateForm" class="date-form" (ngSubmit)="customDate()">
+    <mat-form-field appearance="fill" class="mr-20">
+      <mat-label>From</mat-label>
+      <input matInput formControlName="fromDate" [matDatepicker]="frompicker" />
+      <mat-datepicker-toggle matSuffix [for]="frompicker"></mat-datepicker-toggle>
+      <mat-datepicker #frompicker></mat-datepicker>
+      <mat-hint *ngIf="submitted &&  f['fromDate'].errors && f['fromDate'].errors['required']"
+        class="invalid-feedback error-message">
+        From Date is required
+      </mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="mr-20">
+      <mat-label>To</mat-label>
+      <input matInput formControlName="toDate" [matDatepicker]="topicker" />
+      <mat-datepicker-toggle matSuffix [for]="topicker"></mat-datepicker-toggle>
+      <mat-datepicker #topicker></mat-datepicker>
+      <mat-hint *ngIf="submitted &&  f['toDate'].errors && f['toDate'].errors['required']"
+        class="invalid-feedback error-message">
+        To Date is required
+      </mat-hint>
+    </mat-form-field>
+    <button type="submit" [disabled]="dateForm.invalid && this.invalid" mat-icon-button
+      class=" text-primary arrow-right shadow-none icon-50">
+      <i-tabler name="arrow-right" class="icon-60"></i-tabler>
+    </button>
+  </form>
+  <div *ngIf="dateForm.hasError('invalidDateRange')">
+    <p class="error-message">The 'From' date must be less than the 'To' date.</p>
+  </div>
+</div>
+
+<div class="row mt-10">
+  <!-- Total orders count split up -->
+  <div class="col-lg-8">
+    <mat-card class="cardWithShadow">
+      <div class="row mr-0">
+        <div class="col-6  first-line p-24  d-flex justify-content-center align-items-center flex-direction-column">
+          <div class="filter-section">
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+              <i-tabler name="dots-vertical"></i-tabler>
+            </button>
+            <mat-menu #menu="matMenu" xPosition="before">
+              <button mat-menu-item (click)="insideOrderCountFilter('today')">
+                <span>Today</span>
+              </button>
+              <button mat-menu-item (click)="insideOrderCountFilter('week')">
+                <span>Last 7 days</span>
+              </button>
+              <button mat-menu-item (click)="insideOrderCountFilter('month')">
+                <span>Last 30 days</span>
+              </button>
+            </mat-menu>
+          </div>
+
+          <apx-chart [series]="totalOrderChart.series" [labels]="totalOrderChart.labels"
+            [dataLabels]="totalOrderChart.dataLabels" [chart]="totalOrderChart.chart" [legend]="totalOrderChart.legend"
+            [colors]="totalOrderChart.colors" [stroke]="totalOrderChart.stroke" [tooltip]="totalOrderChart.tooltip"
+            [plotOptions]="totalOrderChart.plotOptions" [responsive]="totalOrderChart.responsive"
+            *ngIf="this.totalOrdershow" [responsive]="totalOrderChart.responsiveOptions"></apx-chart>
+          <div class="textCenter inprogress mt-15" (click)="inProgressDetails(1)">
+            <mat-card-title class="textCenter">Total Orders</mat-card-title>
+            <h4 class="mat-headline-5 textCenter  pt-10 ">{{this.totalOrders}}</h4>
+          </div>
+        </div>
+        <div class="col-6 pr-0">
+          <div class="row mr-0">
+            <div class="col-12 border-line p-24">
+              <mat-card-title class="textCenter">Inprogress Orders</mat-card-title>
+              <div class="textCenter inprogress mt-10" (click)="inProgressDetails(3)">
+                <h4 class="mat-headline-5 textCenter">{{this.inProgressOrders}}</h4>
+              </div>
+            </div>
+            <div class="col-12 p-24">
+              <mat-card-title class="textCenter">Submitted Orders</mat-card-title>
+              <div class="textCenter inprogress mt-10" (click)="inProgressDetails(2)">
+                <h4 class="mat-headline-5 textCenter">{{this.completedOrders}}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+    <!-- No orders card -->
+    <mat-card class="cardWithShadow" *ngIf="this.nototalOrderHeading">
+      <mat-card-title class="textCenter d-flex justify-content-center align-items-center p-92"
+        *ngIf="this.nodueHeading">No Orders for {{this.subclientName?this.subclientName:this.clientName}}</mat-card-title>
+    </mat-card>
+  </div>
+  <div class="col-lg-4">
+    <mat-card class="cardWithShadow" [ngClass]="!this.nodueHeading?'due-orders':'p-92'">
+      <mat-card-title class="textCenter p-20" *ngIf="!this.nodueHeading">Due Orders</mat-card-title>
+      <div class="d-flex justify-content-center align-items-center flex-direction-column">
+        <apx-chart [series]="dueChart.series" [labels]="dueChart.labels" [dataLabels]="dueChart.dataLabels"
+          [chart]="dueChart.chart" [legend]="dueChart.legend" [colors]="dueChart.colors" [stroke]="dueChart.stroke"
+          [tooltip]="dueChart.tooltip" [plotOptions]="dueChart.plotOptions" [responsive]="dueChart.responsive"
+          *ngIf="this.duechartShow"></apx-chart>
+      </div>
+      <!-- No orders card -->
+      <mat-card-title class="textCenter d-flex justify-content-center align-items-center" *ngIf="this.nodueHeading">No
+        Due Orders for {{this.subclientName?this.subclientName:this.clientName}}</mat-card-title>
+    </mat-card>
+  </div>
+</div>
+
+<!-- ---------------------------------3 Months Analysis------------------------------- -->
+<div class="d-flex justify-content-center align-items-center flex-direction-column mb-20">
+  <h2 class="mat-headline-5 textCenter  pt-10 ">Monthwise Analysis</h2>
+</div>
+<!-- Top 5 sub clients -->
+<!-- <div class="row">
+  <div class="col-lg-4">
+    <mat-card class="cardWithShadow" *ngIf="!this.subClientPresent">
+      <mat-card-title class="textCenter d-flex justify-content-center align-items-center p-92"
+        >No SubClients for {{this.clientName}}</mat-card-title>
+    </mat-card>
+    <mat-card class="cardWithShadow" *ngIf="this.subClientPresent">
+      <mat-card-content class="p-24" (click)="subclientDetails()" style="cursor:pointer">
+        <div class="d-flex w-100">
+          <mat-card-title>Sub Client</mat-card-title> -->
+          <!-- <div class="m-l-auto">
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+              <i-tabler name="dots-vertical"></i-tabler>
+            </button>
+            <mat-menu #menu="matMenu" xPosition="before">
+              <button mat-menu-item>
+                <span>Action</span>
+              </button>
+              <button mat-menu-item>
+                <span>Another Action</span>
+              </button>
+              <button mat-menu-item>
+                <span>Something else here</span>
+              </button>
+            </mat-menu>
+          </div> -->
+        <!-- </div>
+        <apx-chart [series]="profitExpanceChart.series" [dataLabels]="profitExpanceChart.dataLabels"
+          [chart]="profitExpanceChart.chart" [legend]="profitExpanceChart.legend" [xaxis]="profitExpanceChart.xaxis"
+          [yaxis]="profitExpanceChart.yaxis" [grid]="profitExpanceChart.grid" [stroke]="profitExpanceChart.stroke"
+          [tooltip]="profitExpanceChart.tooltip" [plotOptions]="profitExpanceChart.plotOptions"
+          *ngIf="this.subclientshow"></apx-chart>
+      </mat-card-content>
+    </mat-card>
+  </div> -->
+  <!-- Top 5 state -->
+   <!-- <div class="col-lg-4">
+    <mat-card class="cardWithShadow" *ngIf="!this.statePresent">
+      <mat-card-title class="textCenter d-flex justify-content-center align-items-center p-92"
+        >No States for {{this.clientName}}</mat-card-title>
+    </mat-card>
+    <mat-card class="cardWithShadow"  *ngIf="this.statePresent">
+      <mat-card-content class="p-24" (click)="subclientDetails()" style="cursor:pointer">
+        <div class="d-flex w-100">
+          <mat-card-title>State</mat-card-title>
+        </div>
+        <apx-chart [series]="stateChart.series" [dataLabels]="stateChart.dataLabels" [chart]="stateChart.chart"
+          [legend]="stateChart.legend" [xaxis]="stateChart.xaxis" [yaxis]="stateChart.yaxis" [grid]="stateChart.grid"
+          [stroke]="stateChart.stroke" [tooltip]="stateChart.tooltip" [plotOptions]="stateChart.plotOptions"
+          *ngIf="this.stateshow"></apx-chart>
+      </mat-card-content>
+    </mat-card>
+  </div>  -->
+  <!-- Top 5 portal -->
+  <!-- <div class="col-lg-4">
+    <mat-card class="cardWithShadow" *ngIf="!this.portalPresent">
+      <mat-card-title class="textCenter d-flex justify-content-center align-items-center p-92"
+        >No Portals for {{this.clientName}}</mat-card-title>
+    </mat-card>
+    <mat-card class="cardWithShadow" *ngIf="this.portalPresent">
+      <mat-card-content class="p-24" (click)="subclientDetails()" style="cursor:pointer">
+        <div class="d-flex w-100">
+          <mat-card-title>Portal</mat-card-title>
+        </div>
+        <apx-chart [series]="portalChart.series" [dataLabels]="portalChart.dataLabels" [chart]="portalChart.chart"
+          [legend]="portalChart.legend" [xaxis]="portalChart.xaxis" [yaxis]="portalChart.yaxis"
+          [grid]="portalChart.grid" [stroke]="portalChart.stroke" [tooltip]="portalChart.tooltip"
+          [plotOptions]="portalChart.plotOptions" *ngIf="this.portalshow" ></apx-chart>
+      </mat-card-content>
+    </mat-card>
+  </div> -->
+<!-- </div> -->
+
+<div class="row p-20">
+  <mat-card class="cardWithShadow" *ngIf="!this.subClientMonthChartShow" >
+    <mat-card-title class="textCenter d-flex justify-content-center align-items-center p-92"
+      >No SubClients for {{this.clientName}}</mat-card-title>
+  </mat-card>
+  <mat-card class="cardWithShadow subclient-graph"  *ngIf="this.subClientMonthChartShow">
+    <mat-card-content class="p-24" style="cursor:pointer">
+      <div class="d-flex w-100">
+        <mat-card-title  class="textCenter">Sub Clients</mat-card-title>
+        <button type="button" (click)="subclientDetails()" class="view-more">View More</button>
+        <div class="m-l-auto">
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <i-tabler name="dots-vertical"></i-tabler>
+          </button>
+          <mat-menu #menu="matMenu" xPosition="before">
+            <button mat-menu-item (click)="this.monthWiseSubclients(3)">
+              <span>3 months</span>
+            </button>
+            <button mat-menu-item (click)="this.monthWiseSubclients(6)">
+              <span>6 months</span>
+            </button>
+            <button mat-menu-item (click)="this.monthWiseSubclients(12)">
+              <span>12 months</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+     
+      <apx-chart id="barchart"
+      [series]="barChart.series"
+      [chart]="barChart.chart"
+      [colors]="barChart.colors"
+      [dataLabels]="barChart.dataLabels"
+      [plotOptions]="barChart.plotOptions"
+      [responsive]="barChart.responsive"
+      [xaxis]="barChart.xaxis"
+      [yaxis]="barChart.yaxis"
+      [legend]="barChart.legend"
+      [fill]="barChart.fill"
+      
+    ></apx-chart>
+  </mat-card-content>
+      </mat-card>
+</div>
+
+
+<!-- Top 5 sub clients -->
+<div class="row" *ngIf="this.showSubGraph">
+  <!-- Top 5 state -->
+<div class="col-lg-6">
+    <mat-card class="cardWithShadow" *ngIf="!this.statePresent">
+      <mat-card-title class="textCenter d-flex justify-content-center align-items-center p-92"
+        >No Zipcodes for {{this.clientName}}</mat-card-title>
+    </mat-card>
+    <mat-card class="cardWithShadow"  *ngIf="this.statePresent">
+      <mat-card-content class="p-24"
+       style="cursor:pointer">
+        <div class="d-flex w-100">
+          <mat-card-title>Top 10 Zipcode for {{this.subClient}}</mat-card-title>
+        </div>
+        <apx-chart [series]="stateChart.series" [dataLabels]="stateChart.dataLabels" [chart]="stateChart.chart"
+          [legend]="stateChart.legend" [xaxis]="stateChart.xaxis" [yaxis]="stateChart.yaxis" [grid]="stateChart.grid"
+          [stroke]="stateChart.stroke" [tooltip]="stateChart.tooltip" [plotOptions]="stateChart.plotOptions"
+          *ngIf="this.stateshow"></apx-chart>
+      </mat-card-content>
+    </mat-card>
+  </div> 
+  <!-- Top 5 portal -->
+ <div class="col-lg-6">
+    <mat-card class="cardWithShadow" *ngIf="!this.portalPresent">
+      <mat-card-title class="textCenter d-flex justify-content-center align-items-center p-92"
+        >No Portals for {{this.clientName}}</mat-card-title>
+    </mat-card>
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24" 
+       style="cursor:pointer">
+        <div class="d-flex w-100">
+          <mat-card-title>Top 10 Portal for {{this.subClient}}</mat-card-title>
+        </div>
+        <apx-chart [series]="portalChart.series" [dataLabels]="portalChart.dataLabels" [chart]="portalChart.chart"
+          [legend]="portalChart.legend" [xaxis]="portalChart.xaxis" [yaxis]="portalChart.yaxis"
+          [grid]="portalChart.grid" [stroke]="portalChart.stroke" [tooltip]="portalChart.tooltip"
+          [plotOptions]="portalChart.plotOptions" *ngIf="this.portalshow" ></apx-chart>
+      </mat-card-content>
+    </mat-card>
+  </div> 
+ </div>
+
+<!-- Loader -->
+<ngx-spinner class="loader-spin" size="default" type="ball-scale-pulse">
+  <p class="loading-text">Please Wait.... </p>
+</ngx-spinner>

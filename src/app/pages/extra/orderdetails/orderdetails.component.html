@@ -1,0 +1,299 @@
+<!-- Filter Modal -->
+<mat-card class="cardWithShadow filter-card" *ngIf="this.filterShow" >
+  <div class="close-icon">
+    <button mat-icon-button (click)="closeFilter()">
+      <img src="../../../assets/images/close.jpg" alt="close-icon">
+    </button>
+  </div>
+  <mat-card-content class="p-24">
+    <div class="d-flex justify-content-center align-items-center mb-30 all-filters">
+      <!-- Date form -->
+      <div class="form-date">
+        <form [formGroup]="dateForm" class="date-form" (ngSubmit)="loadData()">
+          <div class="col-lg-3 col-xl-3 col-md-3 col-xs-6 col-sm-6">
+            <mat-form-field appearance="fill" class="mr-20 form-field">
+              <mat-label>From</mat-label>
+              <input matInput formControlName="fromDate" [matDatepicker]="frompicker" value="this.value.startDate" />
+              <mat-datepicker-toggle matSuffix [for]="frompicker"></mat-datepicker-toggle>
+              <mat-datepicker #frompicker></mat-datepicker>
+              <mat-hint *ngIf="submitted &&  f['fromDate'].errors && f['fromDate'].errors['required']"
+                class="invalid-feedback error-message">
+                From Date is required
+              </mat-hint>
+            </mat-form-field>
+          </div>
+
+          <div class="col-lg-3 col-xl-3 col-md-3 col-xs-6 col-sm-6">
+            <mat-form-field appearance="fill" class="mr-20">
+              <mat-label>To</mat-label>
+              <input matInput formControlName="toDate" [matDatepicker]="topicker" />
+              <mat-datepicker-toggle matSuffix [for]="topicker"></mat-datepicker-toggle>
+              <mat-datepicker #topicker></mat-datepicker>
+              <mat-hint *ngIf="submitted &&  f['toDate'].errors && f['toDate'].errors['required']"
+                class="invalid-feedback error-message">
+                To Date is required
+              </mat-hint>
+            </mat-form-field>
+            <div *ngIf="dateForm.hasError('invalidDateRange')">
+              <p class="error-message">The 'From' date must be less than the 'To' date.</p>
+            </div>
+          </div>
+          <!-- sub client -->
+          <div class="col-lg-3 col-xl-3 col-md-3 col-xs-6 col-sm-6">
+            <mat-form-field class="">
+              <mat-label>Sub Client</mat-label>
+              
+              <mat-select formControlName="subClientId" [value]="this.value.subClientId">
+                <mat-option>select</mat-option>
+                <mat-option value={{subclient.id}}
+                  *ngFor="let subclient of this.subclientList">{{subclient.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <!-- portal -->
+          <div class="col-lg-3 col-xl-3 col-md-3 col-xs-6 col-sm-6">
+            <mat-form-field class="">
+              <mat-label>Portal</mat-label>
+              <mat-select formControlName="portalID" >
+                <mat-option>select</mat-option>
+                <mat-option value={{portal.portalID}}
+                  *ngFor="let portal of this.portallist">{{portal.portalName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <!-- state -->
+          <div class="col-lg-3 col-xl-3 col-md-3 col-xs-6 col-sm-6">
+            <mat-form-field class="">
+              <mat-label>State</mat-label>
+              <mat-select  formControlName="stateId">
+                <mat-option>select</mat-option>
+                <mat-option value={{state.stateID}}
+                  *ngFor="let state of this.statelist">{{state.stateName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <!-- order type -->
+          <div class="col-lg-3 col-xl-3 col-md-3 col-xs-6 col-sm-6">
+            <mat-form-field class="">
+              <mat-label>Order type</mat-label>
+              <mat-select formControlName="orderTypeId">
+                <mat-option>select</mat-option>
+                <mat-option value={{order.orderTypeID}}
+                  *ngFor="let order of this.orderTypelist">{{order.orderTypeName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <!-- status -->
+          <div class="col-lg-3 col-xl-3 col-md-3 col-xs-6 col-sm-6">
+            <mat-form-field class="">
+              <mat-label>Status</mat-label>
+              <mat-select  formControlName="statusId">
+                <mat-option>select</mat-option>
+                <mat-option value={{status.statusId}}
+                  *ngFor="let status of this.statuslist">{{status.statusName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <!-- pic status -->
+          <div class="col-lg-3 col-xl-3 col-md-3 col-xs-6 col-sm-6">
+            <mat-form-field class="">
+              <mat-label>Pic Status</mat-label>
+              <mat-select formControlName="picStatusId">
+                <mat-option>select</mat-option>
+                <mat-option value={{picstatus.id}}
+                  *ngFor="let picstatus of this.picstatuslist">{{picstatus.status}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <!-- search button -->
+          <div class="d-flex justify-content-end w-100">
+            <button type="submit"
+              class=" text-primary search-button shadow-none">
+              Search
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Filter button -->
+<div class="filter-heading">
+  <button mat-raised-button (click)="openFilter()">Filter</button>
+</div>
+<!-- Common search -->
+<div class="order-heading">
+  <div class="d-flex search-bar">
+  <input type="text" [(ngModel)]="searchValue" placeholder="search here....."/>
+  <button type="button" (click)="this.loadData()">search</button>
+  </div>
+</div>
+<!-- No orders -->
+<mat-card class="cardWithShadow" *ngIf="!this.showTable">
+  <mat-card-title class="textCenter d-flex justify-content-center align-items-center p-92"
+    >No Order Details</mat-card-title>
+</mat-card>
+<!-- Order details -->
+<mat-card class="cardWithShadow order-details"  [ngClass]="{'background-show': this.filterShow}" *ngIf="showTable">
+  <mat-card-content class="p-24">
+    <mat-card-title class="textCenter">Order Details</mat-card-title>
+    <div class="table-responsive m-t-16">
+      <table mat-table [dataSource]="dataSource" class="w-100 table-borderless" matSort matSortActive="subjectAddress"
+        matSortDirection="asc">
+    
+        <!-- Subject Address Column -->
+        <ng-container matColumnDef="subjectAddress">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+            Subject Address
+          </th>
+          <td mat-cell *matCellDef="let element" class="mat-body-1 f-w-500">
+            {{ element.orderAddress }}
+          </td>
+        </ng-container>
+
+        <!-- Sub Client Column -->
+        <ng-container matColumnDef="subclientName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+           Sub Client
+          </th>
+          <td mat-cell *matCellDef="let element" class="mat-body-1">
+          {{ element.subclientName }}
+          </td>
+        </ng-container>
+
+            <!-- Portal Column -->
+            <ng-container matColumnDef="portalName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+               Portal Name
+              </th>
+              <td mat-cell *matCellDef="let element" class="mat-body-1">
+               {{ element.portalName }}
+              </td>
+            </ng-container>
+             <!-- Order Type Column -->
+             <ng-container matColumnDef="orderTypeName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+                Order Type
+              </th>
+              <td mat-cell *matCellDef="let element" class="mat-body-1 text-success">
+               {{ element.orderTypeName }}
+              </td>
+            </ng-container>
+              <!-- Due Date Column -->
+              <ng-container matColumnDef="dueDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+                  Due Date
+                </th>
+                <td mat-cell *matCellDef="let element" class="mat-body-1">
+                 {{    element.dueDate| date:'shortDate' }}
+                </td>
+              </ng-container>
+            <!-- Pic status Column -->
+            <ng-container matColumnDef="picStatus">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+                Pic Status
+              </th>
+              <td mat-cell *matCellDef="let element" class="mat-body-1 text-success">
+                {{ element.picStatus }}
+              </td>
+            </ng-container>
+
+        <!-- status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+            Status
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <ng-template [ngIf]="element.status == 'Assigned- RE'">
+              <span class="bg-light-primary text-primary rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                {{ element.status | titlecase }}
+              </span>
+            </ng-template>
+            <ng-template [ngIf]="element.status == 'Submit'">
+              <span class="bg-light-success text-success rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                {{ element.status | titlecase }}
+              </span>
+            </ng-template>
+            <ng-template [ngIf]="element.status == 'Completed'">
+              <span class="bg-light-success text-success rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                {{ element.status | titlecase }}
+              </span>
+            </ng-template>
+            <ng-template [ngIf]="element.status == 'Clarified'">
+              <span class="bg-light-success text-success rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                {{ element.status | titlecase }}
+              </span>
+            </ng-template>
+            <ng-template [ngIf]="element.status == 'Picture Status'">
+              <span class="bg-light-success text-warning  rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                {{ element.status | titlecase }}
+              </span>
+            </ng-template>
+            <ng-template [ngIf]="element.status == 'New'">
+              <span class="bg-light-success text-success rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                {{ element.status | titlecase }}
+              </span>
+            </ng-template>
+            <ng-template [ngIf]="element.status == 'Assigned - DE'">
+              <span class="bg-light-primary text-primary rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                {{ element.status | titlecase }}
+              </span>
+            </ng-template>
+            <ng-template [ngIf]="element.status == 'Research'">
+              <span class="bg-light-error text-error rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                {{ element.status | titlecase }}
+              </span>
+            </ng-template>
+            <ng-template [ngIf]="element.status == 'On-Hold'">
+              <span class="bg-light-warning text-warning rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                {{ element.status | titlecase }}
+              </span>
+            </ng-template>
+            <ng-template [ngIf]="element.status == 'QA Research'">
+              <span class="bg-light-warning text-warning rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                {{ element.status | titlecase }}
+              </span>
+            </ng-template>
+            <ng-template [ngIf]="element.status == 'Cancelled'">
+              <span class="bg-light-error text-error rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                {{ element.status | titlecase }}
+              </span>
+            </ng-template>
+            <ng-template [ngIf]="element.status == 'Data Entry'">
+              <span class="bg-light-warning text-warning rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                {{ element.status | titlecase }}
+              </span>
+            </ng-template>
+            <ng-template [ngIf]="element.status == 'QA Full'">
+              <span class="bg-light-warning text-warning rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                {{ element.status | titlecase }}
+              </span>
+            </ng-template>
+            <ng-template [ngIf]="element.status == 'QA Data Entry'">
+              <span class="bg-light-primary text-primary rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                {{ element.status | titlecase }}
+              </span>
+            </ng-template>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+      <!-- pagination -->
+      <div class="pagination">
+        <div >
+          <button type="button"  (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+          <span>Page {{ currentPage }} of {{ totalPages }}</span>
+          <button type="button" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+        </div>
+        <span class="total-records">Total Records:{{this.totalRecords}}</span>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Loader -->
+<ngx-spinner class="loader-spin" size="default" type="ball-scale-pulse">
+  <p class="loading-text">Please Wait.... </p>
+</ngx-spinner>

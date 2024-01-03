@@ -1,0 +1,52 @@
+<div class="blank-layout-container justify-content-center align-items-center bg-light-primary">
+  <div class="position-relative row w-100 h-100 bg-gredient justify-content-center">
+    <div class="col-lg-4 d-flex align-items-center">
+      <mat-card class="cardWithShadow boxed-auth">
+        <mat-card-content class="p-32">
+          <div class="text-center">
+            <a [routerLink]="['/dashboard']">
+              <img src="./assets/images/logos/bts.png" class="align-middle m-2" alt="logo" />
+            </a>
+          </div>
+          <div class="or-border m-t-30">Sign In</div>
+          <form class="m-t-30" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Email</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <input matInput [formControlName]="'email'" type="email" required (change)="this.emailChange($event)" />
+            </mat-form-field>
+            <!-- validation -->
+            <mat-hint>
+              <div class="invalid-feedback" *ngIf="this.showEmailError">{{this.incorrectEmail}}</div>
+              <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                <div *ngIf="f.email.errors.required">Email Field is required.</div>
+                <div *ngIf="f.email.errors.pattern">Invalid email format. Please enter a valid email address without
+                  spaces between letters.</div>
+              </div>
+            </mat-hint>
+            <!-- password -->
+            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block password-label">Password</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <input matInput type="password" [formControlName]="'password'" (change)="this.passwordChange($event)" />
+            </mat-form-field>
+            <!-- validation -->
+            <mat-hint>
+              <div class="invalid-feedback" *ngIf="this.showPasswordError">{{this.incorrectPassword}}</div>
+              <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                <div *ngIf="f.password.errors.required">Password Field is required.</div>
+              </div>
+            </mat-hint>
+            <!-- Sign in button -->
+            <button type="submit" mat-flat-button color="primary" class="w-100 sign-in-btn">
+              Sign In
+            </button>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<!-- Loader -->
+<ngx-spinner class="loader-spin" size="default" type="ball-scale-pulse">
+  <p class="loading-text">Please Wait.... </p>
+</ngx-spinner>

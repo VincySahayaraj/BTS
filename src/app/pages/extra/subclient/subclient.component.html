@@ -1,0 +1,152 @@
+<div class="d-flex subclient-page">
+  <div class="col-sm-12 col-xs-12 col-lg-4 col-xl-4">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24">
+        <mat-card-title class="textCenter">Sub Client Details</mat-card-title>
+        <div class="table-responsive m-t-16">
+          <table mat-table [dataSource]="dataSourceClient" class="w-100 table-borderless" matSort
+            matSortActive="subjectClientName" matSortDirection="asc">
+
+            <!-- Sub Client Column -->
+            <ng-container matColumnDef="subClientName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+                Sub Client
+              </th>
+              <td mat-cell *matCellDef="let element" class="mat-body-1">
+                {{ element.subClientName }}
+              </td>
+            </ng-container>
+
+            <!-- Order Type Column -->
+            <ng-container matColumnDef="orderCount">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+                Order Count
+              </th>
+              <td mat-cell *matCellDef="let element" class="mat-body-1 text-success">
+                {{ element.orderCount }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="subClientID">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+                View
+              </th>
+              <td mat-cell *matCellDef="let element" class="mat-body-1"
+                (click)="orderDetailsbySubclient(element.subClientID)">
+                <button mat-icon-button>
+                  <i-tabler name="chevron-right"></i-tabler>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+
+          <mat-paginator #paginator1 [pageSizeOptions]="[10,20,40,100]" showFirstLastButtons [length]="dataSourceClient.data.length"></mat-paginator>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="col-sm-12 col-xs-12 col-lg-4 col-xl-4">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24">
+        <mat-card-title class="textCenter">State Details</mat-card-title>
+        <div class="table-responsive m-t-16">
+          <table mat-table [dataSource]="dataSourceState" class="w-100 table-borderless" matSort
+            matSortActive="stateName" matSortDirection="asc">
+
+            <!-- Sub Client Column -->
+            <ng-container matColumnDef="stateName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+                State
+              </th>
+              <td mat-cell *matCellDef="let element" class="mat-body-1">
+                {{ element.stateName }}
+              </td>
+            </ng-container>
+
+            <!-- Order Type Column -->
+            <ng-container matColumnDef="orderCount">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+                Order Count
+              </th>
+              <td mat-cell *matCellDef="let element" class="mat-body-1 text-success">
+                {{ element.orderCount }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="stateID">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+                View
+              </th>
+              <td mat-cell *matCellDef="let element" class="mat-body-1"
+                (click)="orderDetailsbySubclient(element.stateID)">
+                <button mat-icon-button>
+                  <i-tabler name="chevron-right"></i-tabler>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsState"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsState"></tr>
+          </table>
+          <mat-paginator #paginator2 [pageSizeOptions]="[10,20,40,100]" showFirstLastButtons [length]="dataSourceState.data.length"></mat-paginator>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="col-sm-12 col-xs-12 col-lg-4 col-xl-4">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24">
+        <mat-card-title class="textCenter">Portal Details</mat-card-title>
+        <div class="table-responsive m-t-16">
+          <table mat-table [dataSource]="dataSourcePortal" class="w-100 table-borderless" matSort
+            matSortActive="portalName" matSortDirection="asc">
+
+            <!-- Sub Client Column -->
+            <ng-container matColumnDef="portalName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+               Portal
+              </th>
+              <td mat-cell *matCellDef="let element" class="mat-body-1">
+                {{ element.portalName }}
+              </td>
+            </ng-container>
+
+            <!-- Order Type Column -->
+            <ng-container matColumnDef="orderCount">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+                Order Count
+              </th>
+              <td mat-cell *matCellDef="let element" class="mat-body-1 text-success">
+                {{ element.orderCount }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="portalID">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
+                View
+              </th>
+              <td mat-cell *matCellDef="let element" class="mat-body-1"
+                (click)="orderDetailsbySubclient(element.portalID)">
+                <button mat-icon-button>
+                  <i-tabler name="chevron-right"></i-tabler>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsPortal"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsPortal"></tr>
+          </table>
+          <mat-paginator #paginator3 [pageSizeOptions]="[10,20,40,100]" showFirstLastButtons [length]="dataSourcePortal.data.length"></mat-paginator>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<!-- Loader -->
+<ngx-spinner class="loader-spin" size="default" type="ball-scale-pulse">
+  <p class="loading-text">Please Wait.... </p>
+</ngx-spinner>

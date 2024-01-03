@@ -1,0 +1,99 @@
+@use "@angular/material" as mat;
+@include mat.core();
+
+@import "variables";
+@import "layouts/transitions";
+@import "helpers/color";
+@import "helpers/icon-size";
+
+//Theme colors
+
+@import "themecolors/default_theme";
+@include mat.all-component-themes($bluetheme);
+
+//container layout
+@import "overrides/materialoverrides";
+@import "container";
+@import "layouts/layouts";
+@import "grid/grid";
+@import "helpers/custom-flex";
+@import "helpers/index";
+
+// pages
+@import "pages/dashboards";
+@import "pages/auth";
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple::before {
+    border-bottom: none;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: #fff;
+    border-radius: 11px;
+}
+// .filter-card .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+//   background: rgba(204, 204, 204, 0.8) !important;
+// }
+// .mat-mdc-form-field {
+//   width:100%;
+// }
+.mdc-text-field:not(.mdc-text-field--disabled) .mdc-floating-label {
+    color: rgb(0 0 0);
+}
+.mat-mdc-text-field-wrapper .mat-mdc-form-field-input-control {
+    height: 20px !important;
+}
+
+// .mat-mdc-form-field-subscript-wrapper {
+//   display: none;
+// }
+.mat-mdc-form-field-bottom-align::before {
+  display: unset !important;
+}
+.mat-drawer.mat-drawer-side {
+  z-index: 0 !important;
+}
+@media (max-width:997px){
+.first-line .apexcharts-legend {
+    // flex-direction: column;
+    // left: 25% !important;
+    display: none;
+}
+// .first-line .apexcharts-legend-text {
+//   font-size: 8px !important;
+// }
+.table-responsive td, .table-responsive mat-cell {
+  white-space: unset;
+}
+}
+
+// .table-borderless .mdc-data-table__cell:first-child {
+//     position: sticky;
+//     top: 0;
+//     z-index: 1;
+//     background-color: white; /* Match your table background color */
+//     left: 0;
+//   }
+  @media(max-width:997px){
+    .table-borderless .mdc-data-table__cell:first-child ,.table-borderless .mdc-data-table__header-cell:first-child{
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background-color: white; /* Match your table background color */
+      left: 0;
+    }
+    .table-borderless .mdc-data-table__cell{
+      font-size: 12px;
+    }
+    .table-borderless .mdc-data-table__cell:first-child, .table-borderless .mdc-data-table__header-cell:first-child,
+    .mat-mdc-paginator{
+      position: sticky;
+      z-index: 1;
+      background-color: white; /* Match your table background color */
+      left: 0;
+    }
+  }
+  
+  .mat-mdc-paginator-range-label {
+    margin: 0px !important;
+  }

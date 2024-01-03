@@ -1,0 +1,6 @@
+.subclient-page{
+flex-direction: row;
+@media(max-width:991px){
+    flex-direction: column;
+}
+}
